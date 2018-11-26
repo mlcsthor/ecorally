@@ -1,6 +1,11 @@
 package fr.lionware.ecorally;
 
 public class FuelCell extends Component {
-    public void getCoefficient() {
+    public FuelCell(String _name, int _price, int _weight) {
+        super(_name, _price, _weight);
+    }
+
+    public double getCoefficient() {
+        return 0;
     }
 }

@@ -6,5 +6,8 @@ public class Score {
     private Playground playground;
 
     public Score(int _value, String _date, Playground _playground) {
+        value = _value;
+        date = _date;
+        playground = _playground;
     }
 }
