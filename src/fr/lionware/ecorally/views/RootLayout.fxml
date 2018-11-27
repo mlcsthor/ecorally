@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.lionware.ecorally.controllers.RootLayout">
+   <children>
+      <Button fx:id="startButton" layoutX="254.0" layoutY="187.0" mnemonicParsing="false" onAction="#openGameMenu" text="Commencer" />
+      <Label layoutX="197.0" layoutY="81.0" text="Eco Rally">
+         <font>
+            <Font name="Avenir Next Bold" size="50.0" />
+         </font>
+      </Label>
+      <Label layoutX="163.0" layoutY="373.0" text="A LO43 Project by Thomas BICHOT &amp; Maxime LUCAS - 2018">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
