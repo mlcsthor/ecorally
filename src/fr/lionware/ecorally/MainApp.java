@@ -47,9 +47,15 @@ public class MainApp extends Application {
             // Give the controller access to the main app.
             Controller controller = loader.getController();
             controller.setMainApp(this);
+
+            if (primaryStage.getScene() == null) {
+                Scene scene = new Scene(rootLayout);
+                primaryStage.setScene(scene);
+            } else {
+                primaryStage.getScene().setRoot(rootLayout);
+            }
             // Show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
+
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();

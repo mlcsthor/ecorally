@@ -24,6 +24,7 @@ public class MainMenu extends Controller{
 
     public void openPlayground() throws IOException {
         mainApp.setNewScene("PlaygroundLayout");
+        mainApp.getPrimaryStage().setMaximized(true);
     }
 
 }
