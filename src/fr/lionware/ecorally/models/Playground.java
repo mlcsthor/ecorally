@@ -1,4 +1,4 @@
-package fr.lionware.ecorally;
+package fr.lionware.ecorally.models;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,17 +1,13 @@
 package fr.lionware.ecorally.controllers;
 
-import fr.lionware.ecorally.MainApp;
 import javafx.fxml.FXML;
 
-import java.io.IOException;
-
-public class MainMenu extends Controller{
-
+public class PlaygroundLayout extends Controller{
     /**
      * The constructor.
      * The constructor is called before the initialize() method.
      */
-    public MainMenu() {
+    public PlaygroundLayout() {
     }
 
     /**
@@ -21,9 +17,4 @@ public class MainMenu extends Controller{
     @FXML
     private void initialize() {
     }
-
-    public void openPlayground() throws IOException {
-        mainApp.setNewScene("PlaygroundLayout");
-    }
-
 }

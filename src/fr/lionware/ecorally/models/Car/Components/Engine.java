@@ -1,4 +1,4 @@
-package fr.lionware.ecorally.Car.Components;
+package fr.lionware.ecorally.models.Car.Components;
 
 public class Engine extends Component {
     private double power;

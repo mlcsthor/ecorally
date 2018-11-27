@@ -1,4 +1,4 @@
-package fr.lionware.ecorally;
+package fr.lionware.ecorally.models;
 
 public class Score {
     private int value;

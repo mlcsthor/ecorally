@@ -1,4 +1,4 @@
-package fr.lionware.ecorally.Car.Components;
+package fr.lionware.ecorally.models.Car.Components;
 
 public class Battery extends Component {
     private static int DEFAULT_LEVEL = 100;

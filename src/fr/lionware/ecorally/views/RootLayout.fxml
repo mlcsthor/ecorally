@@ -5,16 +5,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.lionware.ecorally.controllers.RootLayout">
    <children>
-      <Button fx:id="startButton" layoutX="254.0" layoutY="187.0" mnemonicParsing="false" onAction="#openGameMenu" text="Commencer" />
-      <Label layoutX="197.0" layoutY="81.0" text="Eco Rally">
+      <Button fx:id="startButton" alignment="CENTER" layoutX="254.0" layoutY="187.0" mnemonicParsing="false" onAction="#openGameMenu" text="Commencer" textAlignment="CENTER" />
+      <Label layoutX="197.0" layoutY="85.0" text="Eco Rally" textAlignment="CENTER" AnchorPane.bottomAnchor="241.0" AnchorPane.leftAnchor="197.0" AnchorPane.rightAnchor="183.5" AnchorPane.topAnchor="85.0">
          <font>
             <Font name="Avenir Next Bold" size="50.0" />
          </font>
       </Label>
-      <Label layoutX="163.0" layoutY="373.0" text="A LO43 Project by Thomas BICHOT &amp; Maxime LUCAS - 2018">
+      <Label layoutX="163.0" layoutY="373.0" text="A LO43 project by Thomas BICHOT &amp; Maxime LUCAS - 2018">
          <font>
             <Font size="10.0" />
          </font>

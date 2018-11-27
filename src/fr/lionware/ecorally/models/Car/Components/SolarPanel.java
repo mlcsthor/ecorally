@@ -1,4 +1,4 @@
-package fr.lionware.ecorally.Car.Components;
+package fr.lionware.ecorally.models.Car.Components;
 
 public class SolarPanel extends Component {
     public SolarPanel(String _name, int _price, int _weight) {

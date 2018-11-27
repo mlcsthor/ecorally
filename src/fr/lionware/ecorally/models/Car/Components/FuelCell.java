@@ -1,4 +1,4 @@
-package fr.lionware.ecorally.Car.Components;
+package fr.lionware.ecorally.models.Car.Components;
 
 public class FuelCell extends Component {
     public FuelCell(String _name, int _price, int _weight) {

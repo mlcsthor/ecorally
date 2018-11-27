@@ -5,16 +5,16 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.lionware.ecorally.views.MainMenu">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.lionware.ecorally.controllers.MainMenu">
    <children>
-      <Button layoutX="150.0" layoutY="187.0" mnemonicParsing="false" text="Jouer" />
-      <Button layoutX="271.0" layoutY="187.0" mnemonicParsing="false" text="Garage" />
-      <Button layoutX="402.0" layoutY="187.0" mnemonicParsing="false" text="Score" />
-      <Label layoutX="248.0" layoutY="84.0" text="Menu">
+      <Button layoutX="100.0" layoutY="171.0" mnemonicParsing="false" onAction="#openPlayground" prefHeight="60.0" prefWidth="110.0" text="Jouer" />
+      <Button layoutX="245.0" layoutY="171.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" text="Garage" />
+      <Button layoutX="390.0" layoutY="171.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" text="Score" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="248.0" layoutY="84.0" text="Menu" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="84.0">
          <font>
             <Font size="40.0" />
          </font>
       </Label>
+      <Button alignment="BOTTOM_RIGHT" layoutX="497.0" layoutY="359.0" mnemonicParsing="false" text="Paramètres" />
    </children>
 </AnchorPane>

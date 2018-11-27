@@ -3,13 +3,14 @@ package fr.lionware.ecorally.controllers;
 import fr.lionware.ecorally.MainApp;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 
 import java.awt.*;
+import java.io.IOException;
 
-public class RootLayout {
-
-    // Reference to the main application.
-    private MainApp mainApp;
+public class RootLayout extends Controller {
 
     /**
      * The constructor.
@@ -26,16 +27,8 @@ public class RootLayout {
     private void initialize() {
     }
 
-    /**
-     * Is called by the main application to give a reference back to itself.
-     *
-     * @param mainApp
-     */
-    public void setMainApp(MainApp mainApp) {
-        this.mainApp = mainApp;
-    }
-
-    public void openGameMenu(){
-
+    public void openGameMenu() throws IOException {
+        mainApp.setNewScene("MainMenu");
+        mainApp.getPrimaryStage().setFullScreen(true);
     }
 }

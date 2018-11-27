@@ -1,4 +1,4 @@
-package fr.lionware.ecorally.Car.Components;
+package fr.lionware.ecorally.models.Car.Components;
 
 public class Tire extends Component {
     private static int DEFAULT_USURY = 0;
