@@ -1,4 +1,4 @@
-package fr.lionware.ecorally;
+package fr.lionware.ecorally.Car.Components;
 
 public abstract class Component {
     private static int DEFAULT_PRICE = 0;

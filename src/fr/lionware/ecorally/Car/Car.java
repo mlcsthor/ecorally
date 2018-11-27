@@ -1,4 +1,6 @@
-package fr.lionware.ecorally;
+package fr.lionware.ecorally.Car;
+
+import fr.lionware.ecorally.Car.Components.Component;
 
 import java.util.ArrayList;
 import java.util.List;

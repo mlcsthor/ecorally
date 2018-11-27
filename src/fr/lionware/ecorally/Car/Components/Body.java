@@ -1,4 +1,4 @@
-package fr.lionware.ecorally;
+package fr.lionware.ecorally.Car.Components;
 
 public class Body extends Component {
     private double aerodynamism;
