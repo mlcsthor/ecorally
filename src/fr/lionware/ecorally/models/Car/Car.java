@@ -45,7 +45,7 @@ public class Car {
     /**
      * Calculate the total consumption coefficient
      */
-    public void calculateCoefficient() {
+    private void calculateCoefficient() {
         coefficient = 0;
 
         for (Component component: components) {
