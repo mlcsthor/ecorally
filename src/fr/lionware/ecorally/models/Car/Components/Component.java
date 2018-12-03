@@ -18,5 +18,9 @@ public abstract class Component {
         this("Component", DEFAULT_PRICE, DEFAULT_WEIGHT);
     }
 
+    public double getWeight() {
+        return weight;
+    }
+
     public abstract double getCoefficient();
 }

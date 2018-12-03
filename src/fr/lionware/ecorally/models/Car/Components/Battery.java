@@ -1,10 +1,10 @@
 package fr.lionware.ecorally.models.Car.Components;
 
 public class Battery extends Component {
-    private static int DEFAULT_LEVEL = 100;
+    private static double DEFAULT_LEVEL = 100;
 
     private double capacity;
-    private int level;
+    private double level;
 
     public Battery(String _name, int _price, int _weight, double _capacity) {
         super(_name, _price, _weight);
@@ -16,5 +16,9 @@ public class Battery extends Component {
     @Override
     public double getCoefficient() {
         return 0;
+    }
+
+    public double getCurrentCapacity() {
+        return capacity * (level/100);
     }
 }

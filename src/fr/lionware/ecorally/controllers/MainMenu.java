@@ -1,6 +1,5 @@
 package fr.lionware.ecorally.controllers;
 
-import fr.lionware.ecorally.MainApp;
 import javafx.fxml.FXML;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class MainMenu extends Controller{
     }
 
     public void openPlayground() throws IOException {
-        mainApp.setNewScene("PlaygroundLayout");
+        mainApp.switchToPane("PlaygroundLayout");
         mainApp.getPrimaryStage().setMaximized(true);
     }
 

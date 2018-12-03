@@ -12,4 +12,8 @@ public class Engine extends Component {
     public double getCoefficient() {
         return 0;
     }
+
+    public double getPower() {
+        return power;
+    }
 }

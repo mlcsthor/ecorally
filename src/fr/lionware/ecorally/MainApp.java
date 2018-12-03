@@ -1,34 +1,28 @@
 package fr.lionware.ecorally;
 
 import java.io.IOException;
+import java.util.*;
 
 import fr.lionware.ecorally.controllers.Controller;
-import fr.lionware.ecorally.controllers.RootLayout;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-import javax.naming.ldap.Control;
 
 
 public class MainApp extends Application {
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     private Stage primaryStage;
-    private AnchorPane rootLayout;
+    private Map<String, Pane> panes;
 
     @Override
     public void start(Stage primaryStage) {
+        this.panes = new HashMap<>();
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Eco Rally");
 
-        setNewScene("RootLayout");
+        switchToPane("RootLayout");
     }
 
     public Stage getPrimaryStage() {
@@ -36,29 +30,41 @@ public class MainApp extends Application {
     }
 
     /**
-     * Initializes the root layout.
+     * Switch to another pane
+     * @param paneName The pane name
      */
-    public void setNewScene(String sceneName) {
+    public void switchToPane(String paneName) {
         try {
-            // Load root layout from fxml file.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("views/" + sceneName + ".fxml"));
-            rootLayout = loader.load();
-            // Give the controller access to the main app.
-            Controller controller = loader.getController();
-            controller.setMainApp(this);
+            Pane pane;
+
+            if (panes.containsKey(paneName)) {
+                pane = panes.get(paneName);
+            } else {
+                // Load root layout from fxml file.
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(MainApp.class.getResource("views/" + paneName + ".fxml"));
+                pane = loader.load();
+
+                Controller controller = loader.getController();
+                controller.setMainApp(this);
+
+                panes.put(paneName, pane);
+            }
 
             if (primaryStage.getScene() == null) {
-                Scene scene = new Scene(rootLayout);
+                Scene scene = new Scene(pane);
                 primaryStage.setScene(scene);
             } else {
-                primaryStage.getScene().setRoot(rootLayout);
+                primaryStage.getScene().setRoot(pane);
             }
-            // Show the scene containing the root layout.
 
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

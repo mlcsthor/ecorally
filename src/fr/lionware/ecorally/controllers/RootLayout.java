@@ -1,13 +1,7 @@
 package fr.lionware.ecorally.controllers;
 
-import fr.lionware.ecorally.MainApp;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class RootLayout extends Controller {
@@ -28,7 +22,7 @@ public class RootLayout extends Controller {
     }
 
     public void openGameMenu() throws IOException {
-        mainApp.setNewScene("MainMenu");
+        mainApp.switchToPane("MainMenu");
         mainApp.getPrimaryStage().setFullScreen(true);
     }
 }
