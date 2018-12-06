@@ -12,7 +12,6 @@ public abstract class Controller {
      * @param mainApp
      */
     public void setMainApp(MainApp mainApp) {
-        System.out.println("setMain");
         this.mainApp = mainApp;
     }
 }

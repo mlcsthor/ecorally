@@ -23,6 +23,6 @@ public class RootLayout extends Controller {
 
     public void openGameMenu() throws IOException {
         mainApp.switchToPane("MainMenu");
-        mainApp.getPrimaryStage().setFullScreen(true);
+        //mainApp.getPrimaryStage().setFullScreen(true);
     }
 }

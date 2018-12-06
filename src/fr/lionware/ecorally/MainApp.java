@@ -57,7 +57,7 @@ public class MainApp extends Application {
             } else {
                 primaryStage.getScene().setRoot(pane);
             }
-
+            primaryStage.centerOnScreen();
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();

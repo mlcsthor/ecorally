@@ -12,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.awt.*;
+import java.io.IOException;
 
 import static javafx.scene.input.KeyCode.RIGHT;
 import static javafx.scene.input.KeyCode.UP;
@@ -20,29 +21,27 @@ import static javafx.scene.input.KeyCode.UP;
 public class PlaygroundLayout extends Controller{
 
     @FXML
-    private AnchorPane root;
-
-    @FXML
-    private ImageView carImage;
-
-    @FXML
     private Group car;
 
     @FXML
     private ImageView frontWheel;
+
     @FXML
     private ImageView backWheel;
 
     @FXML
-    private Rectangle ground;
+    private Group background;
 
-    double speed = 20;
+    @FXML
+    private Group ground;
+
+    private double speed = 20;
     /**
      * The constructor.
      * The constructor is called before the initialize() method.
      */
     public PlaygroundLayout() {
-        System.out.println("Playground");
+
     }
 
     /**
@@ -51,16 +50,16 @@ public class PlaygroundLayout extends Controller{
      */
     @FXML
     private void initialize() {
-        System.out.println("Init");
+
     }
 
     public void moveForward() {
         final Timeline timeline = new Timeline();
         timeline.setCycleCount(1);
         timeline.setAutoReverse(true);
-        final KeyValue kv = new KeyValue(car.layoutXProperty(), car.getLayoutX() + speed);
-        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv);
-        timeline.getKeyFrames().add(kf);
+        //final KeyValue kv = new KeyValue(car.layoutXProperty(), car.getLayoutX() + speed);
+        //final KeyFrame kf = new KeyFrame(Duration.millis(500), kv);
+        //timeline.getKeyFrames().add(kf);
 
         final KeyValue kv2 = new KeyValue(frontWheel.rotateProperty(), frontWheel.getRotate() + 90);
         final KeyFrame kf2 = new KeyFrame(Duration.millis(500), kv2);
@@ -70,29 +69,46 @@ public class PlaygroundLayout extends Controller{
         final KeyFrame kf3 = new KeyFrame(Duration.millis(500), kv3);
         timeline.getKeyFrames().add(kf3);
 
+        final KeyValue kv4 = new KeyValue(background.layoutXProperty(), background.getLayoutX() - speed);
+        final KeyFrame kf4 = new KeyFrame(Duration.millis(500), kv4);
+        timeline.getKeyFrames().add(kf4);
+
+        final KeyValue kv5 = new KeyValue(ground.layoutXProperty(), ground.getLayoutX() - speed);
+        final KeyFrame kf5 = new KeyFrame(Duration.millis(500), kv5);
+        timeline.getKeyFrames().add(kf5);
+
         timeline.play();
     }
+
 
     public void moveBackward() {
         final Timeline timeline = new Timeline();
         timeline.setCycleCount(1);
         timeline.setAutoReverse(true);
-        final KeyValue kv = new KeyValue(car.layoutXProperty(), car.getLayoutX() - speed);
-        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv);
-        timeline.getKeyFrames().add(kf);
+        //final KeyValue kv = new KeyValue(car.layoutXProperty(), car.getLayoutX() - speed);
+        //final KeyFrame kf = new KeyFrame(Duration.millis(500), kv);
+        //timeline.getKeyFrames().add(kf);
 
-        final KeyValue kv2 = new KeyValue(frontWheel.rotateProperty(), frontWheel.getRotate() - speed);
+        final KeyValue kv2 = new KeyValue(frontWheel.rotateProperty(), frontWheel.getRotate() - 90);
         final KeyFrame kf2 = new KeyFrame(Duration.millis(500), kv2);
         timeline.getKeyFrames().add(kf2);
 
-        final KeyValue kv3 = new KeyValue(backWheel.rotateProperty(), backWheel.getRotate() - speed);
+        final KeyValue kv3 = new KeyValue(backWheel.rotateProperty(), backWheel.getRotate() - 90);
         final KeyFrame kf3 = new KeyFrame(Duration.millis(500), kv3);
         timeline.getKeyFrames().add(kf3);
+
+        final KeyValue kv4 = new KeyValue(background.layoutXProperty(), background.getLayoutX() + speed);
+        final KeyFrame kf4 = new KeyFrame(Duration.millis(500), kv4);
+        timeline.getKeyFrames().add(kf4);
+
+        final KeyValue kv5 = new KeyValue(ground.layoutXProperty(), ground.getLayoutX() + speed);
+        final KeyFrame kf5 = new KeyFrame(Duration.millis(500), kv5);
+        timeline.getKeyFrames().add(kf5);
 
         timeline.play();
     }
 
-    @FXML  // <== perhaps you had this missing??
+    @FXML
     void keyPressed(KeyEvent event) {
         if(speed < 200){
             speed = speed + speed * 0.5;
@@ -109,7 +125,7 @@ public class PlaygroundLayout extends Controller{
         }
     }
 
-    @FXML  // <== perhaps you had this missing??
+    @FXML
     void keyReleased(KeyEvent event) {
         speed = 20;
         switch (event.getCode()) {
@@ -119,4 +135,5 @@ public class PlaygroundLayout extends Controller{
                 break;
         }
     }
+
 }
