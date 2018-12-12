@@ -7,13 +7,24 @@ import fr.lionware.ecorally.controllers.Controller;
 import fr.lionware.ecorally.models.Car.Components.Component;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.scene.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.dyn4j.dynamics.Body;
+import org.dyn4j.dynamics.BodyFixture;
+import org.dyn4j.dynamics.World;
+import org.dyn4j.geometry.MassType;
+import org.dyn4j.geometry.Rectangle;
+import org.dyn4j.geometry.Vector2;
+
+import javax.naming.ldap.Control;
 
 
 public class MainApp extends Application {
     private Stage primaryStage;
+    public Pane currentPane;
+    public Node node;
     private Map<String, Pane> panes;
 
     private List<Component> componentList;
@@ -57,6 +68,7 @@ public class MainApp extends Application {
                 primaryStage.setScene(scene);
             } else {
                 primaryStage.getScene().setRoot(pane);
+                currentPane = pane;
             }
 
             if (controller != null) controller.configure();
