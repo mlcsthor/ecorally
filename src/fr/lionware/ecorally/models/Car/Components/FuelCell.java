@@ -8,4 +8,9 @@ public class FuelCell extends Component {
     public double getCoefficient() {
         return 0;
     }
+
+    @Override
+    public String getCaracteristics() {
+        return null;
+    }
 }

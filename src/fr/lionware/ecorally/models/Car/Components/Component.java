@@ -1,6 +1,14 @@
 package fr.lionware.ecorally.models.Car.Components;
 
-public abstract class Component {
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.lionware.ecorally.MainApp;
+import fr.lionware.ecorally.utils.IO;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Component implements Serializable {
     private static int DEFAULT_PRICE = 0;
     private static int DEFAULT_WEIGHT = 0;
 
@@ -23,4 +31,18 @@ public abstract class Component {
     }
 
     public abstract double getCoefficient();
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public abstract String getCaracteristics();
+
+    public static List<Component> loadComponents() {
+        return (List<Component>) IO.readFromFile("res/components.ser");
+    }
 }

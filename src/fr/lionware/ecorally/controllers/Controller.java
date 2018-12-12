@@ -2,16 +2,22 @@ package fr.lionware.ecorally.controllers;
 
 import fr.lionware.ecorally.MainApp;
 
-public abstract class Controller {
-    // Reference to the main application.
-    protected MainApp mainApp;
+import java.io.Serializable;
+
+public abstract class Controller implements Serializable {
+    MainApp mainApp;
 
     /**
-     * Is called by the main application to give a reference back to itself.
-     *
-     * @param mainApp
+     * Reference the main app in each controller
+     * @param _mainApp JavaFX Application
      */
-    public void setMainApp(MainApp mainApp) {
-        this.mainApp = mainApp;
+    public void setMainApp(MainApp _mainApp) {
+        mainApp = _mainApp;
     }
+
+    /**
+     * Make something using mainApp
+     * Used because setMainApp() is called after initialize()
+     */
+    public abstract void configure();
 }

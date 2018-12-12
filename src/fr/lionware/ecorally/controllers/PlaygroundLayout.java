@@ -17,7 +17,6 @@ import java.io.IOException;
 import static javafx.scene.input.KeyCode.RIGHT;
 import static javafx.scene.input.KeyCode.UP;
 
-
 public class PlaygroundLayout extends Controller{
 
     @FXML
@@ -136,4 +135,8 @@ public class PlaygroundLayout extends Controller{
         }
     }
 
+    @Override
+    public void configure() {
+
+    }
 }

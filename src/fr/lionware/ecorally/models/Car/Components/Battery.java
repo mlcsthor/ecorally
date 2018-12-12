@@ -1,6 +1,8 @@
 package fr.lionware.ecorally.models.Car.Components;
 
-public class Battery extends Component {
+import java.io.Serializable;
+
+public class Battery extends Component implements Serializable {
     private static double DEFAULT_LEVEL = 100;
 
     private double capacity;
@@ -16,6 +18,11 @@ public class Battery extends Component {
     @Override
     public double getCoefficient() {
         return 0;
+    }
+
+    @Override
+    public String getCaracteristics() {
+        return "Capacité : " + capacity + ", niveau : " + level + '%';
     }
 
     public double getCurrentCapacity() {

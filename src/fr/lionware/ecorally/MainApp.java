@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.*;
 
 import fr.lionware.ecorally.controllers.Controller;
+import fr.lionware.ecorally.models.Car.Components.Component;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -16,17 +16,17 @@ public class MainApp extends Application {
     private Stage primaryStage;
     private Map<String, Pane> panes;
 
+    private List<Component> componentList;
+
     @Override
-    public void start(Stage primaryStage) {
-        this.panes = new HashMap<>();
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Eco Rally");
+    public void start(Stage _primaryStage) {
+        panes = new HashMap<>();
+        primaryStage = _primaryStage;
+        primaryStage.setTitle("Eco Rally");
+
+        componentList = Component.loadComponents();
 
         switchToPane("RootLayout");
-    }
-
-    public Stage getPrimaryStage() {
-        return primaryStage;
     }
 
     /**
@@ -36,6 +36,7 @@ public class MainApp extends Application {
     public void switchToPane(String paneName) {
         try {
             Pane pane;
+            Controller controller = null;
 
             if (panes.containsKey(paneName)) {
                 pane = panes.get(paneName);
@@ -45,7 +46,7 @@ public class MainApp extends Application {
                 loader.setLocation(MainApp.class.getResource("views/" + paneName + ".fxml"));
                 pane = loader.load();
 
-                Controller controller = loader.getController();
+                controller = loader.getController();
                 controller.setMainApp(this);
 
                 panes.put(paneName, pane);
@@ -57,6 +58,9 @@ public class MainApp extends Application {
             } else {
                 primaryStage.getScene().setRoot(pane);
             }
+
+            if (controller != null) controller.configure();
+
             primaryStage.centerOnScreen();
             primaryStage.show();
         } catch (IOException e) {
@@ -66,5 +70,13 @@ public class MainApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public List<Component> getComponentList() {
+        return componentList;
     }
 }

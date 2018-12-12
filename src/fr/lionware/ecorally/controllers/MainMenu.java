@@ -21,9 +21,17 @@ public class MainMenu extends Controller{
     private void initialize() {
     }
 
-    public void openPlayground() throws IOException {
+    public void openPlayground() {
         mainApp.switchToPane("PlaygroundLayout");
         //mainApp.getPrimaryStage().setMaximized(true);
     }
 
+    public void openGarage() {
+        mainApp.switchToPane("Garage");
+    }
+
+    @Override
+    public void configure() {
+
+    }
 }

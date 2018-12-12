@@ -25,4 +25,9 @@ public class RootLayout extends Controller {
         mainApp.switchToPane("MainMenu");
         //mainApp.getPrimaryStage().setFullScreen(true);
     }
+
+    @Override
+    public void configure() {
+
+    }
 }

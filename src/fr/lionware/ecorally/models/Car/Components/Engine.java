@@ -1,6 +1,8 @@
 package fr.lionware.ecorally.models.Car.Components;
 
-public class Engine extends Component {
+import java.io.Serializable;
+
+public class Engine extends Component implements Serializable {
     private double power;
 
     public Engine(String _name, int _price, int _weight, double _power) {
@@ -11,6 +13,11 @@ public class Engine extends Component {
 
     public double getCoefficient() {
         return 0;
+    }
+
+    @Override
+    public String getCaracteristics() {
+        return "Puissance :" + power;
     }
 
     public double getPower() {
