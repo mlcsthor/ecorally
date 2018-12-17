@@ -15,7 +15,7 @@ public class Body extends Component {
     }
 
     @Override
-    public String getCaracteristics() {
+    public String getCharacteristics() {
         return null;
     }
 }

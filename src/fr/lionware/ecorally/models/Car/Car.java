@@ -39,7 +39,7 @@ public class Car {
         if (!components.contains(component)) {
             components.add(component);
 
-            updateTotalValue(component, 1);
+            updateCharacteristics(component, 1);
         }
     }
 
@@ -49,7 +49,7 @@ public class Car {
      */
     public void removeComponent(Component component) {
         if (components.remove(component)) {
-            updateTotalValue(component, -1);
+            updateCharacteristics(component, -1);
         }
     }
 
@@ -58,7 +58,7 @@ public class Car {
      * @param component The component added or removed
      * @param multiplier -1 if component removed, 1 if component added
      */
-    private void updateTotalValue(Component component, int multiplier) {
+    private void updateCharacteristics(Component component, int multiplier) {
         if (component instanceof Battery) {
             capacity += ((Battery) component).getCurrentCapacity() * multiplier;
         } else if (component instanceof Engine) {

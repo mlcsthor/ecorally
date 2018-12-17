@@ -16,7 +16,7 @@ public class Engine extends Component implements Serializable {
     }
 
     @Override
-    public String getCaracteristics() {
+    public String getCharacteristics() {
         return "Puissance :" + power;
     }
 

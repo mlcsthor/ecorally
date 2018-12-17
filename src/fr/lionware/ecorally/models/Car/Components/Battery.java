@@ -21,7 +21,7 @@ public class Battery extends Component implements Serializable {
     }
 
     @Override
-    public String getCaracteristics() {
+    public String getCharacteristics() {
         return "Capacité : " + capacity + ", niveau : " + level + '%';
     }
 

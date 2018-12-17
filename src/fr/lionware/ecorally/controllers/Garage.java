@@ -1,47 +1,65 @@
 package fr.lionware.ecorally.controllers;
 
-import fr.lionware.ecorally.models.Car.Components.Component;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import fr.lionware.ecorally.components.EngineBlock;
+import fr.lionware.ecorally.models.Car.Components.ComponentType;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+
+import java.util.Arrays;
 
 public class Garage extends Controller {
     @FXML
-    TableView<Component> tableView;
-
-    private ObservableList<Component> componentList;
+    TabPane tabs;
 
     public Garage() {
-        tableView = new TableView<>();
-        componentList = FXCollections.observableArrayList();
+        tabs = new TabPane();
     }
 
     @FXML
     private void initialize() {
-        ObservableList columns = tableView.getColumns();
+        Arrays.stream(ComponentType.values()).forEach((type) -> {
+            Tab tab = new Tab(type.getLabel());
+            tabs.getTabs().add(tab);
 
-        TableColumn<Component, String> nameColumn = new TableColumn<>("Nom");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setFitToWidth(true);
 
-        TableColumn<Component, String> priceColumn = new TableColumn<>("Prix");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+            TilePane tiles = new TilePane();
+            tiles.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+            tiles.setTileAlignment(Pos.CENTER);
+            tiles.getChildren().clear();
+            tiles.setHgap(10);
+            tiles.setVgap(10);
+            tiles.setPrefColumns(4);
 
-        TableColumn<Component, String> caracColumn = new TableColumn<>("Caractéristiques");
-        caracColumn.setCellValueFactory(new PropertyValueFactory<>("caracteristics"));
+            for (int i = 0; i < 9; i++) {
+                EngineBlock block = new EngineBlock();
+                block.setBackground(Color.DARKGREEN);
 
-        columns.addAll(nameColumn, priceColumn, caracColumn);
+                tiles.getChildren().add(block);
+            }
+
+            tab.setContent(scrollPane);
+
+            scrollPane.setContent(tiles);
+        });
+    }
+
+    /**
+     * Add elements in the grid
+     */
+    private void populateGrid() {
+
     }
 
     /**
      * Add every component in the table
      */
-    public void configure() {
-        componentList.addAll(mainApp.getComponentList());
-        tableView.setItems(componentList);
-
-        System.out.println(componentList);
-    }
+    public void configure() {}
 }

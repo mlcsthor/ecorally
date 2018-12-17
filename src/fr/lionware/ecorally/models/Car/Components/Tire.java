@@ -16,7 +16,7 @@ public class Tire extends Component {
     }
 
     @Override
-    public String getCaracteristics() {
+    public String getCharacteristics() {
         return null;
     }
 }
