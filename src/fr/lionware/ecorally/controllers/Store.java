@@ -150,4 +150,6 @@ public class Store extends Controller {
 
         mapper.writerFor(Component[].class).writeValue(new File(fileName), items);
     }
+
+    public void openGarage() { mainApp.switchToPane("Garage"); }
 }

@@ -73,4 +73,6 @@ public class Garage extends Controller {
     public void openStore() {
         mainApp.switchToPane("Store");
     }
+
+    public void openMainMenu() { mainApp.switchToPane("MainMenu"); }
 }
