@@ -23,8 +23,8 @@ import javax.naming.ldap.Control;
 
 public class MainApp extends Application {
     private Stage primaryStage;
-    public Pane currentPane;
-    public Node node;
+
+
     private Map<String, Pane> panes;
 
     private List<Component> componentList;
@@ -68,7 +68,7 @@ public class MainApp extends Application {
                 primaryStage.setScene(scene);
             } else {
                 primaryStage.getScene().setRoot(pane);
-                currentPane = pane;
+
             }
 
             if (controller != null) controller.configure();
