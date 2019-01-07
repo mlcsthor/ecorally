@@ -133,8 +133,8 @@ public abstract class ComponentBlock extends VBox {
                         Optional<ButtonType> result = alert.showAndWait();
 
                         if (result.get() == ButtonType.OK) {
-                            store.removeComponents(component, this.type);
                             mainApp.getUser().buyComponent(component);
+                            store.removeComponents(component, this.type);
                         }
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -77,6 +77,10 @@ public class Store extends Controller {
     public void configure() {
         gridMap.forEach((key, grid) -> populateGrid(grid, key));
 
+        updateMoney();
+    }
+
+    private void updateMoney() {
         moneyLabel.setText("" + mainApp.getUser().getMoney());
     }
 
@@ -100,9 +104,11 @@ public class Store extends Controller {
     }
 
     public void removeComponents(Component component, ComponentType type) {
-        List<Component> items = components.get(type);
+        List<Component> items = new ArrayList<>(components.get(type));
 
         items.remove(component);
+
+        components.replace(type, items);
 
         Component[] itemsTab = new Component[items.size()];
 
@@ -117,6 +123,7 @@ public class Store extends Controller {
         }
 
         GridPane grid = gridMap.get(type);
+        updateMoney();
         populateGrid(grid, type);
     }
 
