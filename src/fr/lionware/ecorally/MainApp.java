@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;

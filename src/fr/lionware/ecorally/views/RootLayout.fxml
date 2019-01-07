@@ -2,18 +2,20 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.lionware.ecorally.controllers.RootLayout">
    <children>
-      <Button fx:id="startButton" alignment="CENTER" layoutX="254.0" layoutY="187.0" mnemonicParsing="false" onAction="#openGameMenu" text="Commencer" textAlignment="CENTER" />
-      <Label layoutX="197.0" layoutY="85.0" text="Eco Rally" textAlignment="CENTER">
-         <font>
-            <Font name="Avenir Next Bold" size="50.0" />
-         </font>
-      </Label>
-      <Label layoutX="163.0" layoutY="373.0" text="A LO43 project by Thomas BICHOT &amp; Maxime LUCAS - 2018">
+      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@assets/RootBackground.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="startButton" alignment="CENTER" layoutX="200.0" layoutY="160.0" mnemonicParsing="false" onAction="#openGameMenu" prefHeight="80.0" prefWidth="200.0" styleClass=".button" stylesheets="@style.css" textAlignment="CENTER" />
+      <Label layoutX="163.0" layoutY="373.0" text="A LO43 project by Thomas BICHOT &amp; Maxime LUCAS - 2018" textFill="#8bd1d2">
          <font>
             <Font size="10.0" />
          </font>

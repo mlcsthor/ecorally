@@ -5,17 +5,20 @@ import fr.lionware.ecorally.models.Ground;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.jbox2d.collision.shapes.ChainShape;
@@ -35,11 +38,12 @@ import org.jbox2d.dynamics.joints.WheelJointDef;
 import java.awt.*;
 import java.io.IOException;
 
+import static javafx.scene.input.KeyCode.H;
 import static javafx.scene.input.KeyCode.RIGHT;
 import static javafx.scene.input.KeyCode.UP;
 
 public class PlaygroundLayout extends Controller {
-
+    public static final Color whiteColor = new Color(1,1,1, 0.5);
     public static final World world = new World(new Vec2(0.0f, -10.0f));
 
     //Screen width and height
@@ -67,12 +71,12 @@ public class PlaygroundLayout extends Controller {
             if (i < 40 || i > 940) {
                 do {
                     rand = (int) coordinates[i - 1][1] - 2 + (int) (Math.random() * (4 + 1));
-                } while (rand > 550 || rand < 100);
+                } while (rand > 450 || rand < 200);
                 coordinates[i][1] = rand;
             } else {
                 do {
                     rand = (int) coordinates[i - 1][1] - 10 + (int) (Math.random() * (20 + 1));
-                } while (rand > 550 || rand < 150);
+                } while (rand > 450 || rand < 200);
                 if (i > 900) {
                     if (rand > 400) {
                         coordinates[i][1] = (rand - 5);
@@ -186,8 +190,11 @@ public class PlaygroundLayout extends Controller {
     public void configure() {
         Group root = new Group();
         Scene scene = new Scene(root, WIDTH, HEIGHT);
-        //scene.setFill(new ImagePattern(new Image(getClass().getClassLoader().getResource("background.jpg").toString())));
-
+        scene.getStylesheets().addAll(this.getClass().getResource("../views/style.css").toExternalForm());
+        scene.setFill(new ImagePattern(new Image(getClass().getResource("../views/assets/background1.png").toString())));
+        StackPane pane = new StackPane();
+        pane.setPrefWidth(WIDTH);
+        pane.setPrefHeight(HEIGHT);
         PerspectiveCamera camera = new PerspectiveCamera();
         scene.setCamera(camera);
 
@@ -218,6 +225,7 @@ public class PlaygroundLayout extends Controller {
                 float yposR = toPixelPosY(bodyR.getPosition().y);
                 car.rightWheel.setLayoutX(xposR);
                 car.rightWheel.setLayoutY(yposR);
+                car.rightWheel.setRotate(bodyR.getAngle());
 
                 Body bodyL = (Body)car.leftWheel.getUserData();
                 float xposL = toPixelPosX(bodyL.getPosition().x);
@@ -233,6 +241,7 @@ public class PlaygroundLayout extends Controller {
 
                 if(xposR-toPixelPosX(20) > 0 && xposR-toPixelPosX(20) < WORLD_SIZE - WIDTH){
                     camera.setLayoutX(xposR-toPixelPosX(20));
+                    pane.setLayoutX(camera.getLayoutX());
                 }
             }
         };
@@ -279,54 +288,87 @@ public class PlaygroundLayout extends Controller {
         root.getChildren().add(canvas2);
 
         //Create button to start simulation.
-        final javafx.scene.control.Button btn = new Button();
-        btn.setLayoutX(WIDTH/2-100);
-        btn.setLayoutY(HEIGHT/2-50);
-        btn.setText("Start");
-        btn.setPrefWidth(200);
-        btn.setPrefHeight(100);
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+        final javafx.scene.control.Button startBtn = new Button();
+        final javafx.scene.control.Button resumeBtn = new Button();
+        final javafx.scene.control.Button quitBtn = new Button();
+
+        ImageView startImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/start.png")));
+        startImage.setPreserveRatio(false);
+        startImage.setFitWidth(200);
+        startImage.setFitHeight(80);
+        startBtn.setGraphic(startImage);
+        startBtn.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-                timeline.playFromStart();
-                btn.setVisible(false);
-                canvas.setEffect(null);
-                canvas2.setEffect(null);
-                car.rightWheel.setEffect(null);
-                car.leftWheel.setEffect(null);
-                car.bodywork.setEffect(null);
+                timeline.play();
+                resumeBtn.setVisible(true);
+                startBtn.setVisible(false);
+                quitBtn.setVisible(false);
+                pane.setBackground(null);
             }
         });
 
-        // Create the Effect
-        BoxBlur effect = new BoxBlur();
-        effect.setHeight(8);
-        effect.setWidth(8);
-        effect.setIterations(3);
-        //canvas.setEffect(effect);
-        //canvas2.setEffect(effect);
-        //car.rightWheel.setEffect(effect);
-        //car.leftWheel.setEffect(effect);
-        //car.bodywork.setEffect(effect);
 
-        root.getChildren().add(btn);
-        //root.getChildren().add(car.bodywork);
+        ImageView resumeImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/resume.png")));
+        resumeImage.setPreserveRatio(false);
+        resumeImage.setFitWidth(100);
+        resumeImage.setFitHeight(40);
+        resumeBtn.setGraphic(resumeImage);
+        resumeBtn.setVisible(false);
+        resumeBtn.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                // Create the Effect
+                timeline.stop();
+                resumeBtn.setVisible(false);
+                startBtn.setVisible(true);
+                quitBtn.setVisible(true);
+                pane.setBackground(new Background(new BackgroundFill(whiteColor, CornerRadii.EMPTY, Insets.EMPTY)));
+            }
+        });
+
+        ImageView quitImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/quit.png")));
+        quitImage.setPreserveRatio(false);
+        quitImage.setFitWidth(200);
+        quitImage.setFitHeight(80);
+        quitBtn.setVisible(false);
+        quitBtn.setGraphic(quitImage);
+        quitBtn.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                // Create the Effect
+                mainApp.switchToPane("MainMenu");
+
+            }
+        });
+
+
+
         root.getChildren().add(car.rightWheel);
         root.getChildren().add(car.leftWheel);
+        pane.setBackground(new Background(new BackgroundFill(whiteColor, CornerRadii.EMPTY, Insets.EMPTY)));
+        pane.getChildren().add(resumeBtn);
+        pane.getChildren().add(startBtn);
+        pane.getChildren().add(quitBtn);
+        root.getChildren().add(pane);
         mainApp.getPrimaryStage().setScene(scene);
         mainApp.getPrimaryStage().show();
+
+        startBtn.setTranslateY(-50);
+        quitBtn.setTranslateY(50);
+        resumeBtn.setTranslateX(500);
+        resumeBtn.setTranslateY(-350);
+
     }
 
     private void drawGround(GraphicsContext gc, int n) {
         if(n == 1){
-            //gc.setFill(new ImagePattern(new Image(getClass().getClassLoader().getResource("flag.png").toString())));
-            gc.setFill(Color.YELLOW);
+            gc.setFill(new ImagePattern(new Image(getClass().getResource("../views/assets/flag.png").toString())));
+           // gc.setFill(Color.YELLOW);
             gc.fillRect(5760,  coordinatesY[n][480]-80, 40, 80);
         }
 
-        gc.setFill(Color.rgb(78, 91, 104));
+        gc.setFill(Color.rgb(90, 70, 85));
         gc.fillPolygon(coordinatesX[n],
                 coordinatesY[n], 503);
-        gc.setStroke(Color.rgb(144, 249, 132, 1));
+        gc.setStroke(Color.rgb(142, 210, 211, 1));
         gc.setLineWidth(2);
         gc.strokePolyline(coordinatesX[n],
                 coordinatesY[n], 501);

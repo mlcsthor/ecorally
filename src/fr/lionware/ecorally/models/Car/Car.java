@@ -6,8 +6,7 @@ import fr.lionware.ecorally.models.Car.Components.Component;
 import fr.lionware.ecorally.models.Car.Components.Engine;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import org.jbox2d.collision.shapes.CircleShape;
@@ -122,7 +121,7 @@ public class Car {
      * This method creates a ball by using Circle object from JavaFX and CircleShape from JBox2D
      */
     private void create(){
-        //ImagePattern ipCar = new ImagePattern(new Image(getClass().getClassLoader().getResource("car.png").toString()));
+        ImagePattern wheelImage = new ImagePattern(new Image(getClass().getResource("../../views/assets/wheel.png").toString()));
         Rectangle top = new Rectangle(posXJavaFx, posYJavaFx, widthJavaFx, heightJavaFx);
         top.setFill(Color.YELLOW);
 
@@ -153,11 +152,13 @@ public class Car {
         bodywork = top;
 
         //#####################################
+        Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
 
         Circle right = new Circle(radius);
         right.setLayoutX(posXJavaFx+widthJavaFx*5/6);
         right.setLayoutY(posYJavaFx+heightJavaFx);
-        right.setFill(Color.RED);
+        right.setFill(lg1);
 
         CircleShape cs = new CircleShape();
         cs.m_radius = radius * 0.1f;
@@ -193,7 +194,6 @@ public class Car {
         left.setUserData(bodyL);
 
         leftWheel = left;
-
         //##################################
 
 
@@ -202,7 +202,6 @@ public class Car {
         djd.initialize(bodyL, bodyR, bodyL.getPosition(), bodyR.getPosition());
         djd.length = bodyR.getPosition().x - bodyL.getPosition().x;
         PlaygroundLayout.world.createJoint(djd);
-
         /*
         RevoluteJointDef rjd1 = new RevoluteJointDef();
         rjd1.bodyA = bodyR;
