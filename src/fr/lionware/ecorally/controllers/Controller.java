@@ -5,7 +5,7 @@ import fr.lionware.ecorally.MainApp;
 import java.io.Serializable;
 
 public abstract class Controller implements Serializable {
-    MainApp mainApp;
+    protected MainApp mainApp;
 
     /**
      * Reference the main app in each controller
@@ -14,6 +14,12 @@ public abstract class Controller implements Serializable {
     public void setMainApp(MainApp _mainApp) {
         mainApp = _mainApp;
     }
+
+    /**
+     * Get reference to the main app
+     * @return The main app
+     */
+    public MainApp getMainApp() { return mainApp; }
 
     /**
      * Make something using mainApp

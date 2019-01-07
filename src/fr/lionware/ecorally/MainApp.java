@@ -5,6 +5,7 @@ import java.util.*;
 
 import fr.lionware.ecorally.controllers.Controller;
 import fr.lionware.ecorally.models.Car.Components.Component;
+import fr.lionware.ecorally.models.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
@@ -22,20 +23,18 @@ import javax.naming.ldap.Control;
 
 
 public class MainApp extends Application {
+    private User user;
     private Stage primaryStage;
     public Pane currentPane;
-    public Node node;
     private Map<String, Pane> panes;
-
-    private List<Component> componentList;
 
     @Override
     public void start(Stage _primaryStage) {
+        user = new User("Invite");
+
         panes = new HashMap<>();
         primaryStage = _primaryStage;
         primaryStage.setTitle("Eco Rally");
-
-        componentList = Component.loadComponents();
 
         switchToPane("RootLayout");
     }
@@ -66,6 +65,8 @@ public class MainApp extends Application {
             if (primaryStage.getScene() == null) {
                 Scene scene = new Scene(pane);
                 primaryStage.setScene(scene);
+
+                scene.getStylesheets().add(MainApp.class.getResource("views/style.css").toString());
             } else {
                 primaryStage.getScene().setRoot(pane);
                 currentPane = pane;
@@ -84,11 +85,17 @@ public class MainApp extends Application {
         launch(args);
     }
 
+    /**
+     * Get reference to the stage
+     * @return The stage
+     */
     public Stage getPrimaryStage() {
         return primaryStage;
     }
 
-    public List<Component> getComponentList() {
-        return componentList;
-    }
+    /**
+     * Get reference to the user
+     * @return The user
+     */
+    public User getUser() { return user; }
 }

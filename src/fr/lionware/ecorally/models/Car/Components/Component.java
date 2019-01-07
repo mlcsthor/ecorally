@@ -1,30 +1,37 @@
 package fr.lionware.ecorally.models.Car.Components;
 
-import java.io.*;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import fr.lionware.ecorally.utils.Rarity;
 
-public abstract class Component implements Serializable {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = As.PROPERTY, property = "@class")
+public abstract class Component {
     private static int DEFAULT_PRICE = 0;
     private static int DEFAULT_WEIGHT = 0;
+    private static Rarity DEFAULT_RARITY = Rarity.COMMON;
 
     private String name;
     private int price;
     private double weight;
+    private Rarity rarity;
 
-    public Component(String _name, int _price, double _weight) {
+    public Component(String _name, int _price, double _weight, Rarity _rarity) {
         name = _name;
         price = _price;
         weight = _weight;
+        rarity = _rarity;
     }
 
     public Component() {
-        this("Component", DEFAULT_PRICE, DEFAULT_WEIGHT);
+        this("Component", DEFAULT_PRICE, DEFAULT_WEIGHT, DEFAULT_RARITY);
     }
 
     public double getWeight() {
         return weight;
     }
 
+    @JsonIgnore
     public abstract double getCoefficient();
 
     public String getName() {
@@ -35,10 +42,15 @@ public abstract class Component implements Serializable {
         return price;
     }
 
-    public abstract String getCharacteristics();
+    public Rarity getRarity() { return rarity; }
 
-    public static List<Component> loadComponents() {
-        //return (List<Component>) IO.readFromFile("res/components.ser");
-        return null;
+    @Override
+    public String toString() {
+        return "Component{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                ", weight=" + weight +
+                ", rarity=" + rarity +
+                '}';
     }
 }

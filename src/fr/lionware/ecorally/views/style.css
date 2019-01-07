@@ -1,0 +1,21 @@
+.component-block {
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-padding: 5;
+}
+
+.component-block.common {
+    -fx-background-color: #4caf50;
+}
+
+.component-block.rare {
+    -fx-background-color: #2196f3;
+}
+
+.component-block.epic {
+    -fx-background-color: #9c27b0;
+}
+
+.component-block.exotic {
+    -fx-background-color: #ffc107;
+}

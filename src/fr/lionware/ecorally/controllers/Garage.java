@@ -1,24 +1,31 @@
 package fr.lionware.ecorally.controllers;
 
+import fr.lionware.ecorally.components.ComponentBlock;
 import fr.lionware.ecorally.components.EngineBlock;
-import fr.lionware.ecorally.models.Car.Components.ComponentType;
+import fr.lionware.ecorally.models.Car.Components.Component;
+import fr.lionware.ecorally.models.Car.Components.Engine;
+import fr.lionware.ecorally.utils.ComponentType;
+import fr.lionware.ecorally.utils.Rarity;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class Garage extends Controller {
+    private static int numberOfColumns = 4;
+    private static List<ComponentBlock> items;
+
     @FXML
     TabPane tabs;
 
     public Garage() {
         tabs = new TabPane();
+        items = new ArrayList<>();
     }
 
     @FXML
@@ -30,36 +37,40 @@ public class Garage extends Controller {
             ScrollPane scrollPane = new ScrollPane();
             scrollPane.setFitToWidth(true);
 
-            TilePane tiles = new TilePane();
-            tiles.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-            tiles.setTileAlignment(Pos.CENTER);
-            tiles.getChildren().clear();
-            tiles.setHgap(10);
-            tiles.setVgap(10);
-            tiles.setPrefColumns(4);
+            GridPane gridPane = new GridPane();
+            gridPane.setPadding(new Insets(5));
+            gridPane.setHgap(10);
+            gridPane.setVgap(10);
 
-            for (int i = 0; i < 9; i++) {
-                EngineBlock block = new EngineBlock();
-                block.setBackground(Color.DARKGREEN);
-
-                tiles.getChildren().add(block);
-            }
-
+            scrollPane.setContent(gridPane);
             tab.setContent(scrollPane);
 
-            scrollPane.setContent(tiles);
+            ColumnConstraints constraints = new ColumnConstraints();
+            constraints.setPercentWidth(25);
+
+            for (int i = 0; i < numberOfColumns; i++) {
+                gridPane.getColumnConstraints().addAll(constraints);
+
+                constraints.setFillWidth(true);
+
+                for (int j = 0; j < numberOfColumns; j++) {
+                    Engine engine = new Engine("Moteur " + (i * numberOfColumns + j), 0, 0, 0, Rarity.COMMON);
+
+                    EngineBlock block = new EngineBlock(engine, null, null);
+                    items.add(block);
+
+                    gridPane.add(block, i, j);
+                }
+            }
         });
     }
 
-    /**
-     * Add elements in the grid
-     */
-    private void populateGrid() {
-
+    @Override
+    public void configure() {
+        items.forEach((item) -> item.setListener(getMainApp(), "equip"));
     }
 
-    /**
-     * Add every component in the table
-     */
-    public void configure() {}
+    public void openStore() {
+        mainApp.switchToPane("Store");
+    }
 }

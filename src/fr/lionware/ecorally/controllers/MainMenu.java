@@ -23,7 +23,6 @@ public class MainMenu extends Controller{
 
     public void openPlayground() {
         mainApp.switchToPane("PlaygroundLayout");
-        //mainApp.getPrimaryStage().setMaximized(true);
     }
 
     public void openGarage() {
