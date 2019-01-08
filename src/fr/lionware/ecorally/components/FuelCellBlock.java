@@ -12,8 +12,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 public class FuelCellBlock extends ComponentBlock {
-    public FuelCellBlock(Component _engine, Store _store, ComponentType _type) {
-        super(_engine, _store, _type);
+    public FuelCellBlock(Component _fuelCell, Store _store, ComponentType _type) {
+        super(_fuelCell, _store, _type);
 
         draw("fuel_cell.png", null);
     }

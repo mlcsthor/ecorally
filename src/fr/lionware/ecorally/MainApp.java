@@ -7,12 +7,15 @@ import fr.lionware.ecorally.controllers.Controller;
 import fr.lionware.ecorally.models.Car.Components.Component;
 import fr.lionware.ecorally.models.User;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.World;
@@ -31,11 +34,21 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage _primaryStage) {
-        user = new User("Invite");
+        user = User.load();
+
+        System.out.println(user);
 
         panes = new HashMap<>();
         primaryStage = _primaryStage;
         primaryStage.setTitle("Eco Rally");
+
+        primaryStage.setOnCloseRequest(t -> {
+            user.save();
+            System.out.println(user);
+
+            Platform.exit();
+            System.exit(0);
+        });
 
         switchToPane("RootLayout");
     }
@@ -49,17 +62,20 @@ public class MainApp extends Application {
             Pane pane;
             Controller controller = null;
 
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("views/" + paneName + ".fxml"));
+            pane = loader.load();
+
+            controller = loader.getController();
+            controller.setMainApp(this);
+
             if (panes.containsKey(paneName)) {
                 pane = panes.get(paneName);
+
+
+                controller.afterSwitch();
+                controller = null;
             } else {
-                // Load root layout from fxml file.
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(MainApp.class.getResource("views/" + paneName + ".fxml"));
-                pane = loader.load();
-
-                controller = loader.getController();
-                controller.setMainApp(this);
-
                 panes.put(paneName, pane);
             }
 
@@ -70,7 +86,6 @@ public class MainApp extends Application {
                 scene.getStylesheets().add(MainApp.class.getResource("views/style.css").toString());
             } else {
                 primaryStage.getScene().setRoot(pane);
-
             }
 
             if (controller != null) controller.configure();

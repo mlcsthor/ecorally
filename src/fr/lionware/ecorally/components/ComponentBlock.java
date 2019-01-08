@@ -98,8 +98,6 @@ public abstract class ComponentBlock extends VBox {
         return footer;
     }
 
-    protected abstract void redraw();
-
     /**
      * Draw the block
      * @param imageName Name of the icon used in the body
@@ -119,10 +117,11 @@ public abstract class ComponentBlock extends VBox {
      * Set the mouse listener
      * @param mainApp Reference to the main app
      */
-    public void setListener(MainApp mainApp, String type) {
+    public void setListener(MainApp mainApp, String type, ComponentType componentType) {
         setOnMouseClicked((e) -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 if (type.equals("equip")) {
+                    System.out.println("Player want to equip");
                     mainApp.getUser().getCar().addComponent(component);
                 } else if (type.equals("buy")) {
                     if (mainApp.getUser().hasEnoughMoney(component.getPrice())) {
@@ -133,7 +132,7 @@ public abstract class ComponentBlock extends VBox {
                         Optional<ButtonType> result = alert.showAndWait();
 
                         if (result.get() == ButtonType.OK) {
-                            mainApp.getUser().buyComponent(component);
+                            mainApp.getUser().buyComponent(component, componentType);
                             store.removeComponents(component, this.type);
                         }
                     } else {

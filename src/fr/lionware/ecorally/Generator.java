@@ -13,7 +13,7 @@ public class Generator {
         generateComponents();
     }
 
-    public static void generateComponents() {
+    private static void generateComponents() {
         ObjectMapper mapper = new ObjectMapper();
         String fileName;
 

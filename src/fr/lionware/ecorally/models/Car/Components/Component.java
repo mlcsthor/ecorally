@@ -3,7 +3,12 @@ package fr.lionware.ecorally.models.Car.Components;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.lionware.ecorally.utils.Rarity;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = As.PROPERTY, property = "@class")
 public abstract class Component {
@@ -52,5 +57,30 @@ public abstract class Component {
                 ", weight=" + weight +
                 ", rarity=" + rarity +
                 '}';
+    }
+
+    public static Component[] generateTabFromList(List<Component> list) {
+        Component[] itemsTab = new Component[list.size()];
+
+        for (int i = 0; i < list.size(); i++) {
+            itemsTab[i] = list.get(i);
+        }
+
+        return itemsTab;
+    }
+
+    public static Component[] readFromFile(String fileName) {
+        Component[] items = new Component[0];
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enableDefaultTyping();
+
+        try {
+            items = mapper.readerFor(Component[].class).readValue(new File(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return items;
     }
 }

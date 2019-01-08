@@ -26,4 +26,6 @@ public abstract class Controller implements Serializable {
      * Used because setMainApp() is called after initialize()
      */
     public abstract void configure();
+
+    public void afterSwitch() {}
 }
