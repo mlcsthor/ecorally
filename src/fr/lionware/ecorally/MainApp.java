@@ -44,7 +44,7 @@ public class MainApp extends Application {
 
         primaryStage.setOnCloseRequest(t -> {
             user.save();
-            System.out.println(user);
+            user.saveComponents();
 
             Platform.exit();
             System.exit(0);
