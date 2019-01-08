@@ -53,6 +53,22 @@ public class MainApp extends Application {
         switchToPane("RootLayout");
     }
 
+    public void start(Stage _primaryStage, int n) {
+        user = new User("Invite");
+        panes = new HashMap<>();
+        primaryStage = _primaryStage;
+        primaryStage.setTitle("Eco Rally");
+
+        if(n == 1){
+            switchToPane("MainMenu");
+        }else{
+            switchToPane("MainMenu");
+            switchToPane("PlaygroundLayout");
+        }
+
+    }
+
+
     /**
      * Switch to another pane
      * @param paneName The pane name

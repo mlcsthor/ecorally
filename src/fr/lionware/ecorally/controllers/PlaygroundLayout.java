@@ -1,8 +1,10 @@
 package fr.lionware.ecorally.controllers;
 
+import fr.lionware.ecorally.MainApp;
 import fr.lionware.ecorally.models.Car.Car;
 import fr.lionware.ecorally.models.Ground;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -19,11 +21,14 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Color3f;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.World;
@@ -31,20 +36,16 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.BodyType;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import org.jbox2d.dynamics.joints.WheelJoint;
-import org.jbox2d.dynamics.joints.WheelJointDef;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Date;
 
-import static javafx.scene.input.KeyCode.H;
-import static javafx.scene.input.KeyCode.RIGHT;
-import static javafx.scene.input.KeyCode.UP;
+import static javafx.scene.input.KeyCode.*;
 
 public class PlaygroundLayout extends Controller {
     public static final Color whiteColor = new Color(1,1,1, 0.5);
-    public static final World world = new World(new Vec2(0.0f, -10.0f));
+    public static World world;
 
     //Screen width and height
     public static final int WIDTH = 1200;
@@ -56,9 +57,10 @@ public class PlaygroundLayout extends Controller {
     public static double[][] coordinatesY = new double[2][503];
 
     public PlaygroundLayout(){
+        world = new World(new Vec2(0.0f, -10.0f));
     }
     //This method adds a ground to the screen.
-    public static void addGround(float width, float height) {
+    public static void addGround() {
 
         Vec2[] vectors = new Vec2[1001];
         double[][] coordinates = new double[1001][2];
@@ -68,16 +70,16 @@ public class PlaygroundLayout extends Controller {
         int rand;
         for (int i = 1; i < 1001; i++) {
             coordinates[i][0] = i * 12;
-            if (i < 40 || i > 940) {
+            if (i < 40 || i > 900) {
                 do {
                     rand = (int) coordinates[i - 1][1] - 2 + (int) (Math.random() * (4 + 1));
                 } while (rand > 450 || rand < 200);
-                coordinates[i][1] = rand;
+                coordinates[i][1] = 400;
             } else {
                 do {
                     rand = (int) coordinates[i - 1][1] - 10 + (int) (Math.random() * (20 + 1));
                 } while (rand > 450 || rand < 200);
-                if (i > 900) {
+                if (i > 870) {
                     if (rand > 400) {
                         coordinates[i][1] = (rand - 5);
                     } else {
@@ -117,6 +119,8 @@ public class PlaygroundLayout extends Controller {
         fd.density = 1f;
         fd.friction = 0.3f;
         fd.restitution = 0f;
+        fd.filter.categoryBits = 0x0004;
+        fd.filter.maskBits = -1;
 
         BodyDef bd = new BodyDef();
         bd.position = new Vec2(0f, 0f);
@@ -137,6 +141,7 @@ public class PlaygroundLayout extends Controller {
         fd.shape = ps;
         fd.density = 1.0f;
         fd.friction = 0.3f;
+        fd.filter.categoryBits = 0x0004;
 
         BodyDef bd = new BodyDef();
         bd.position.set(posX, posY);
@@ -173,6 +178,7 @@ public class PlaygroundLayout extends Controller {
         return WIDTH * width / 100.0f;
     }
 
+    //Convert a pixel width to JBox2D width
     public static float toJbox2dWidth(float width) {
         return width / WIDTH * 100.f;
     }
@@ -182,6 +188,7 @@ public class PlaygroundLayout extends Controller {
         return HEIGHT * height / 100.0f;
     }
 
+    //Convert a pixel height to JBox2D height
     public static float toJbox2dHeight(float height) {
         return height / HEIGHT * 100.f;
     }
@@ -192,19 +199,19 @@ public class PlaygroundLayout extends Controller {
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         scene.getStylesheets().addAll(this.getClass().getResource("../views/style.css").toExternalForm());
         scene.setFill(new ImagePattern(new Image(getClass().getResource("../views/assets/background1.png").toString())));
+
         StackPane pane = new StackPane();
         pane.setPrefWidth(WIDTH);
         pane.setPrefHeight(HEIGHT);
+        pane.setBackground(new Background(new BackgroundFill(whiteColor, CornerRadii.EMPTY, Insets.EMPTY)));
+
         PerspectiveCamera camera = new PerspectiveCamera();
         scene.setCamera(camera);
-
-        //Add ground to the application, this is where cars will land
-        addGround(12000, 10);
 
         Car car = new Car(240, 300, 85, 30,
                 BALL_RADIUS, Color.BLACK);
 
-        //Add left and right walls so cars will not move outside the viewing area.
+        addGround();
         addWall(0,100,1,100); //Left wall
         addWall(toPosX(WORLD_SIZE),100,1,100); //Right wall
 
@@ -213,38 +220,7 @@ public class PlaygroundLayout extends Controller {
 
         Duration duration = Duration.seconds(1.0/60.0); // Set duration for frame.
 
-        //Create an ActionEvent, on trigger it executes a world time step and moves the cars to new position
-        EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                //Create time step. Set Iteration count 8 for velocity and 3 for positions
-                world.step(1.0f/60.f, 8, 3);
-
-                //Move cars to the new position computed by JBox2D
-                Body bodyR = (Body)car.rightWheel.getUserData();
-                float xposR = toPixelPosX(bodyR.getPosition().x);
-                float yposR = toPixelPosY(bodyR.getPosition().y);
-                car.rightWheel.setLayoutX(xposR);
-                car.rightWheel.setLayoutY(yposR);
-                car.rightWheel.setRotate(bodyR.getAngle());
-
-                Body bodyL = (Body)car.leftWheel.getUserData();
-                float xposL = toPixelPosX(bodyL.getPosition().x);
-                float yposL = toPixelPosY(bodyL.getPosition().y);
-                car.leftWheel.setLayoutX(xposL);
-                car.leftWheel.setLayoutY(yposL);
-
-                Body bodyT = (Body)car.bodywork.getUserData();
-                float xposT = toPixelPosX(bodyT.getPosition().x);
-                float yposT = toPixelPosY(bodyT.getPosition().y);
-                car.bodywork.setLayoutX(xposT-240);
-                car.bodywork.setLayoutY(yposT-300);
-
-                if(xposR-toPixelPosX(20) > 0 && xposR-toPixelPosX(20) < WORLD_SIZE - WIDTH){
-                    camera.setLayoutX(xposR-toPixelPosX(20));
-                    pane.setLayoutX(camera.getLayoutX());
-                }
-            }
-        };
+        Date timer;
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -269,30 +245,30 @@ public class PlaygroundLayout extends Controller {
             }
         });
 
-        /**
-         * Set ActionEvent and duration to the KeyFrame.
-         * The ActionEvent is trigged when KeyFrame execution is over.
-         */
-        KeyFrame frame = new KeyFrame(duration, ae, null,null);
-        timeline.getKeyFrames().add(frame);
-
-        javafx.scene.canvas.Canvas canvas = new javafx.scene.canvas.Canvas(6000, 800);
+        Canvas canvas = new javafx.scene.canvas.Canvas(6000, 800);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         drawGround(gc, 0);
         root.getChildren().add(canvas);
 
-        javafx.scene.canvas.Canvas canvas2 = new Canvas(6000, 800);
+        Canvas canvas2 = new Canvas(6000, 800);
         GraphicsContext gc2 = canvas2.getGraphicsContext2D();
         canvas2.setLayoutX(5999.5);
         drawGround(gc2, 1);
         root.getChildren().add(canvas2);
 
         //Create button to start simulation.
-        final javafx.scene.control.Button startBtn = new Button();
-        final javafx.scene.control.Button resumeBtn = new Button();
-        final javafx.scene.control.Button quitBtn = new Button();
+        final Button startBtn = new Button();
+        final Button resumeBtn = new Button();
+        final Button quitBtn = new Button();
+        final Button replayBtn = new Button();
+        final Text timeTxt = new Text();
 
         ImageView startImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/start.png")));
+        ImageView resumeImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/resume.png")));
+        ImageView quitImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/quit.png")));
+        ImageView replayImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/replay.png")));
+
+
         startImage.setPreserveRatio(false);
         startImage.setFitWidth(200);
         startImage.setFitHeight(80);
@@ -307,8 +283,6 @@ public class PlaygroundLayout extends Controller {
             }
         });
 
-
-        ImageView resumeImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/resume.png")));
         resumeImage.setPreserveRatio(false);
         resumeImage.setFitWidth(100);
         resumeImage.setFitHeight(40);
@@ -325,7 +299,6 @@ public class PlaygroundLayout extends Controller {
             }
         });
 
-        ImageView quitImage = new ImageView(new Image(getClass().getResourceAsStream("../views/assets/quit.png")));
         quitImage.setPreserveRatio(false);
         quitImage.setFitWidth(200);
         quitImage.setFitHeight(80);
@@ -333,44 +306,100 @@ public class PlaygroundLayout extends Controller {
         quitBtn.setGraphic(quitImage);
         quitBtn.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-                // Create the Effect
-                mainApp.switchToPane("MainMenu");
+                mainApp.getPrimaryStage().close();
+                Platform.runLater( () -> new MainApp().start(
+                        new Stage(), 1)
+                );
+            }
+        });
 
+        replayImage.setPreserveRatio(false);
+        replayImage.setFitWidth(200);
+        replayImage.setFitHeight(80);
+        replayBtn.setVisible(false);
+        replayBtn.setGraphic(replayImage);
+        replayBtn.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                mainApp.getPrimaryStage().close();
+                Platform.runLater( () -> new MainApp().start(
+                        new Stage(), 2)
+                );
             }
         });
 
 
+        //Create an ActionEvent, on trigger it executes a world time step and moves the cars to new position
+        EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                //Create time step. Set Iteration count 8 for velocity and 3 for positions
+                world.step(1.0f/60.f, 8, 3);
 
+                //Move cars to the new position computed by JBox2D
+                Body bodyR = (Body)car.rightWheel.getUserData();
+                float xposR = toPixelPosX(bodyR.getPosition().x);
+                float yposR = toPixelPosY(bodyR.getPosition().y);
+                car.rightWheel.setLayoutX(xposR);
+                car.rightWheel.setLayoutY(yposR);
+
+                Body bodyL = (Body)car.leftWheel.getUserData();
+                float xposL = toPixelPosX(bodyL.getPosition().x);
+                float yposL = toPixelPosY(bodyL.getPosition().y);
+                car.leftWheel.setLayoutX(xposL);
+                car.leftWheel.setLayoutY(yposL);
+
+                Body bodyT = (Body)car.bodywork.getUserData();
+                float xposT = toPixelPosX(bodyT.getPosition().x);
+                float yposT = toPixelPosY(bodyT.getPosition().y);
+                car.bodywork.setLayoutX(xposT-240);
+                car.bodywork.setLayoutY(yposT-300);
+
+                if(xposR-toPixelPosX(20) > 0 && xposR-toPixelPosX(20) < WORLD_SIZE - WIDTH){
+                    camera.setLayoutX(xposR-toPixelPosX(20));
+                    pane.setLayoutX(camera.getLayoutX());
+                }
+                if(xposR >= 11028){
+                    timeline.stop();
+                    pane.setBackground(new Background(new BackgroundFill(whiteColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                    quitBtn.setVisible(true);
+                    replayBtn.setVisible(true);
+                    resumeBtn.setVisible(false);
+                }
+            }
+        };
+
+        KeyFrame frame = new KeyFrame(duration, ae, null,null);
+        timeline.getKeyFrames().add(frame);
+
+        root.getChildren().add(car.bodywork);
         root.getChildren().add(car.rightWheel);
         root.getChildren().add(car.leftWheel);
-        pane.setBackground(new Background(new BackgroundFill(whiteColor, CornerRadii.EMPTY, Insets.EMPTY)));
         pane.getChildren().add(resumeBtn);
         pane.getChildren().add(startBtn);
         pane.getChildren().add(quitBtn);
+        pane.getChildren().add(replayBtn);
         root.getChildren().add(pane);
         mainApp.getPrimaryStage().setScene(scene);
         mainApp.getPrimaryStage().show();
 
         startBtn.setTranslateY(-50);
+        replayBtn.setTranslateY(-50);
         quitBtn.setTranslateY(50);
         resumeBtn.setTranslateX(500);
         resumeBtn.setTranslateY(-350);
-
+        timeTxt.setTranslateX(-500);
+        timeTxt.setTranslateY(-350);
     }
 
     private void drawGround(GraphicsContext gc, int n) {
+        //n = numéro du canvas (0 ou 1)
         if(n == 1){
             gc.setFill(new ImagePattern(new Image(getClass().getResource("../views/assets/flag.png").toString())));
-           // gc.setFill(Color.YELLOW);
-            gc.fillRect(5760,  coordinatesY[n][480]-80, 40, 80);
+            gc.fillRect(5028,  coordinatesY[n][419]-80, 40, 80);
         }
-
         gc.setFill(Color.rgb(90, 70, 85));
-        gc.fillPolygon(coordinatesX[n],
-                coordinatesY[n], 503);
+        gc.fillPolygon(coordinatesX[n], coordinatesY[n], 503);
         gc.setStroke(Color.rgb(142, 210, 211, 1));
         gc.setLineWidth(2);
-        gc.strokePolyline(coordinatesX[n],
-                coordinatesY[n], 501);
+        gc.strokePolyline(coordinatesX[n], coordinatesY[n], 501);
     }
 }
