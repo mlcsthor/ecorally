@@ -47,3 +47,9 @@
     -fx-font-size: 1.5em; /* 12 */
     -fx-text-fill: #8bd1d2;
 }
+
+#time{
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 2em; /* 12 */
+}

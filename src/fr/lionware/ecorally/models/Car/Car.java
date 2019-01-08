@@ -4,18 +4,20 @@ import fr.lionware.ecorally.controllers.PlaygroundLayout;
 import fr.lionware.ecorally.models.Car.Components.Battery;
 import fr.lionware.ecorally.models.Car.Components.Component;
 import fr.lionware.ecorally.models.Car.Components.Engine;
+import fr.lionware.ecorally.models.Playground;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
+import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.joints.DistanceJointDef;
+import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,35 +124,7 @@ public class Car {
      */
     private void create(){
         ImagePattern wheelImage = new ImagePattern(new Image(getClass().getResource("../../views/assets/wheel.png").toString()));
-        Rectangle top = new Rectangle(posXJavaFx, posYJavaFx, widthJavaFx, heightJavaFx);
-        top.setFill(Color.YELLOW);
-
-        PolygonShape ps = new PolygonShape();
-        ps.setAsBox(widthJbox2d/2,heightJbox2d/2);
-
-        /*
-        for (int i = 0; i < ps.m_vertices.length; i++){
-            System.out.println(PlaygroundLayout.toPixelPosX(ps.m_vertices[i].x) + " | " + PlaygroundLayout.toPixelPosY(ps.m_vertices[i].y));
-        }
-        */
-
-        BodyDef bd = new BodyDef();
-        bd.type = BodyType.DYNAMIC;
-        bd.position.set(posXJbox2d,posYJbox2d);
-
-
-        FixtureDef fd = new FixtureDef();
-        fd.shape = ps;
-        fd.density = 100f;
-        fd.friction = 0.3f;
-        fd.restitution = 0f;
-
-        Body bodyT = PlaygroundLayout.world.createBody(bd);
-        bodyT.createFixture(fd);
-        top.setUserData(bodyT);
-        System.out.println(top.getX() + " | " + top.getY());
-        bodywork = top;
-
+        ImagePattern carImage = new ImagePattern(new Image(getClass().getResource("../../views/assets/car.png").toString()));
         //#####################################
         Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
         LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
@@ -169,9 +143,11 @@ public class Car {
 
         FixtureDef fd2 = new FixtureDef();
         fd2.shape = cs;
-        fd2.density = 100f;
+        fd2.density = 50f;
         fd2.friction = 0.3f;
         fd2.restitution = 0f;
+        fd2.filter.categoryBits = 0x0001;
+        fd2.filter.maskBits = 0x0004;
 
         Body bodyR = PlaygroundLayout.world.createBody(bd2);
         bodyR.createFixture(fd2);
@@ -195,20 +171,64 @@ public class Car {
 
         leftWheel = left;
         //##################################
+        Rectangle top = new Rectangle(posXJavaFx-widthJavaFx/2, posYJavaFx-heightJavaFx/2, widthJavaFx, heightJavaFx);
+        top.setFill(Color.YELLOW);
+
+        PolygonShape ps = new PolygonShape();
+        ps.setAsBox(widthJbox2d/2,2.15f);
+
+        BodyDef bd = new BodyDef();
+        bd.type = BodyType.DYNAMIC;
+        bd.position.set(posXJbox2d+widthJbox2d/2,posYJbox2d-heightJbox2d/2);
 
 
+        FixtureDef fd = new FixtureDef();
+        fd.shape = ps;
+        fd.density = 1;
+        fd.friction = 0.3f;
+        fd.restitution = 0f;
+        fd.filter.categoryBits = 0x0001;
+        fd.filter.maskBits = 0x0004;
 
-        DistanceJointDef djd = new DistanceJointDef();
-        djd.initialize(bodyL, bodyR, bodyL.getPosition(), bodyR.getPosition());
-        djd.length = bodyR.getPosition().x - bodyL.getPosition().x;
-        PlaygroundLayout.world.createJoint(djd);
+        Body bodyT = PlaygroundLayout.world.createBody(bd);
+        bodyT.createFixture(fd);
+        top.setUserData(bodyT);
+        bodywork = top;
+
         /*
-        RevoluteJointDef rjd1 = new RevoluteJointDef();
-        rjd1.bodyA = bodyR;
-        rjd1.bodyB = bodyT;
-        rjd1.localAnchorA = bodyR.getWorldCenter();
-        PlaygroundLayout.world.createJoint(rjd1);
+        DistanceJointDef djd = new DistanceJointDef();
+        djd.bodyA = bodyL;
+        djd.bodyB = bodyT;
+        djd.localAnchorA.set(0,0);
+        djd.localAnchorB.set(-widthJbox2d*1/3, -heightJbox2d/2);
+        PlaygroundLayout.world.createJoint(djd);
+
+        DistanceJointDef djd2 = new DistanceJointDef();
+        djd2.bodyA = bodyR;
+        djd2.bodyB = bodyT;
+        djd2.localAnchorA.set(0,0);
+        djd2.localAnchorB.set(widthJbox2d*1/3, -heightJbox2d/2);
+        PlaygroundLayout.world.createJoint(djd2);
+
+        DistanceJointDef djd3 = new DistanceJointDef();
+        djd3.initialize(bodyL, bodyR, bodyL.getPosition(), bodyR.getPosition());
+        djd3.length = bodyR.getPosition().x - bodyL.getPosition().x;
+        PlaygroundLayout.world.createJoint(djd3);
         */
+
+        RevoluteJointDef rjd1 = new RevoluteJointDef();
+        rjd1.bodyA = bodyL;
+        rjd1.bodyB = bodyT;
+        rjd1.localAnchorA.set(0,0);
+        rjd1.localAnchorB.set(-widthJbox2d*1/3, -heightJbox2d/2);
+        PlaygroundLayout.world.createJoint(rjd1);
+
+        RevoluteJointDef rjd2= new RevoluteJointDef();
+        rjd2.bodyA = bodyR;
+        rjd2.bodyB = bodyT;
+        rjd2.localAnchorA.set(0, 0);
+        rjd2.localAnchorB.set(widthJbox2d*1/3, -heightJbox2d/2);
+        PlaygroundLayout.world.createJoint(rjd2);
         /*
         RevoluteJointDef rjd2 = new RevoluteJointDef();
         rjd2.bodyA = bodyL;
@@ -217,9 +237,6 @@ public class Car {
         rjd2.localAnchorB = new Vec2(posXJbox2d+widthJbox2d*1/6,posYJbox2d-heightJbox2d);
         PlaygroundLayout.world.createJoint(rjd2);
         */
-
-
-
 
     }
 }
